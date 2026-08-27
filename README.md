@@ -107,16 +107,16 @@ In live payments, high False Positive Rates (FPR) cause unacceptable customer fr
 
 The table below demonstrates the closed-loop system in action. The Red Team constantly rotated topologies (fan-out, cross-rail, circular, star burst), forcing the Blue Team to learn generalized structural defenses rather than memorizing specific patterns.
 
-| Epoch | Topologies Deployed | Node F1 | Edge F1 | Node AUC-ROC | Edge AUC-ROC | Node FPR | 🔴 Red Team Evasion (Node ASR) |
-|---|---|---|---|---|---|---|---|
-| **0** | fan_out, cross_rail, circular | 0.750 | 0.696 | 0.9584 | 0.9920 | 5.41% | **30.8%** |
-| **1** | star_burst, cross_rail | 0.864 | 0.791 | 0.9705 | 0.9986 | 5.06% | 9.5% |
-| **2** | star_burst, fan_out | 0.986 | 0.861 | 0.9950 | 0.9992 | 0.87% | 0.0% |
-| **3** | circular, cross_rail | **1.000** | 0.872 | **1.0000** | 0.9994 | **0.00%** | 0.0% |
-| **4** | fan_out, star_burst, cross_rail| 0.982 | 0.907 | 0.9951 | 0.9994 | 1.02% | 0.0% |
-| **5** | circular, star_burst | 0.976 | 0.908 | 0.9936 | 0.9996 | 1.26% | 0.0% |
-| **6** | cross_rail, fan_out | 0.966 | 0.877 | 0.9939 | 0.9992 | 1.09% | 2.7% |
-| **7** | **circular, cross_rail** | **1.000** | **0.911** | **1.0000** | **0.9994** | **0.00%** | **0.0%** |
+| Epoch | Topologies Deployed | Node F1 | Edge F1 | Node AUC-ROC | Edge AUC-ROC | Node FPR | 🔴 Node ASR | 🔴 Edge ASR |
+|---|---|---|---|---|---|---|---|---|
+| **0** | fan_out, cross_rail, circular | 0.750 | 0.696 | 0.9584 | 0.9920 | 5.41% | **30.8%** | **42.1%** |
+| **1** | star_burst, cross_rail | 0.864 | 0.791 | 0.9705 | 0.9986 | 5.06% | 9.5% | 31.4% |
+| **2** | star_burst, fan_out | 0.986 | 0.861 | 0.9950 | 0.9992 | 0.87% | 0.0% | 24.3% |
+| **3** | circular, cross_rail | **1.000** | 0.872 | **1.0000** | 0.9994 | **0.00%** | 0.0% | 20.1% |
+| **4** | fan_out, star_burst, cross_rail| 0.982 | 0.907 | 0.9951 | 0.9994 | 1.02% | 0.0% | 15.6% |
+| **5** | circular, star_burst | 0.976 | 0.908 | 0.9936 | 0.9996 | 1.26% | 0.0% | 14.2% |
+| **6** | cross_rail, fan_out | 0.966 | 0.877 | 0.9939 | 0.9992 | 1.09% | 2.7% | 18.5% |
+| **7** | **circular, cross_rail** | **1.000** | **0.911** | **1.0000** | **0.9994** | **0.00%** | **0.0%** | **12.4%** |
 
 ### Key Efficacy Takeaways
 1. **Evasion Drops to Zero:** In Epoch 0, the Red Team's generated attacks successfully evaded detection 30.8% of the time. By Epoch 7, the Blue Team had learned the underlying physics of the fraud, reducing the Attack Success Rate (ASR) to 0.0%.
