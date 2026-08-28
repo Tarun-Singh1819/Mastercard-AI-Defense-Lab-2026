@@ -29,7 +29,7 @@ class FocalLoss(nn.Module):
         loss = focal_term * ce_loss
         return loss.mean()
 
-def train_model(model: nn.Module, data: HeteroData, epochs: int = 200, 
+def train_model(model: nn.Module, data: HeteroData, epochs: int = 120, 
                 lr: float = 0.01, weight_decay: float = 5e-4,
                 node_weight_cap: float = 5.0, edge_weight_cap: float = 10.0, 
                 focal_gamma: float = 2.0) -> nn.Module:
@@ -63,7 +63,7 @@ def train_model(model: nn.Module, data: HeteroData, epochs: int = 200,
 
     best_val_score = 0.0
     best_model_state = None
-    patience = 60
+    patience = 15
     no_improve = 0
 
     for epoch in range(epochs):

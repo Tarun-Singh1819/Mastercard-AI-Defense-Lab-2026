@@ -31,13 +31,48 @@ def post_process_ctgan_output(synthetic_df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 def generate_legit_from_ctgan(ctgan_model_path: str, n_samples: int = 5000) -> pd.DataFrame:
-    """Load trained CTGAN_LEGIT and generate post-processed legitimate transactions."""
-    with open(ctgan_model_path, 'rb') as f:
-        ctgan = pickle.load(f)
-    
-    synthetic = ctgan.sample(n_samples)
-    synthetic = post_process_ctgan_output(synthetic)
-    return synthetic
+    """Load trained CTGAN_LEGIT and generate post-processed legitimate transactions. Fallback to mock if not found."""
+    try:
+        import torch
+        import io
+        # Monkey-patch torch.load to force CPU mapping for CUDA-trained models
+        _original_torch_load = torch.load
+        def _cpu_torch_load(*args, **kwargs):
+            kwargs['map_location'] = torch.device('cpu')
+            return _original_torch_load(*args, **kwargs)
+        torch.load = _cpu_torch_load
+        try:
+            with open(ctgan_model_path, 'rb') as f:
+                ctgan = pickle.load(f)
+        finally:
+            torch.load = _original_torch_load  # Always restore
+        synthetic = ctgan.sample(n_samples)
+        synthetic = post_process_ctgan_output(synthetic)
+        return synthetic
+    except Exception as e:
+        logger.warning(f"⚠️ Could not load CTGAN model ({e}). Generating mock legitimate transactions instead.")
+        # Generate realistic mock data
+        amounts = np.random.lognormal(mean=7.0, sigma=1.2, size=n_samples) # log-normal amounts
+        amounts = np.clip(amounts, 50, 50000) # clamp
+        
+        # dwell times: most are long, some fast
+        dwell_times = np.random.exponential(scale=3600, size=n_samples) + 10
+        dwell_times = np.clip(dwell_times, 10, 86400)
+        
+        rails = np.random.choice(['BANK', 'UPI', 'WALLET'], size=n_samples, p=[0.2, 0.6, 0.2])
+        is_structured = np.zeros(n_samples, dtype=int)
+        # structured if ₹8500-₹10000
+        for idx in range(n_samples):
+            if 8500 <= amounts[idx] <= 10000:
+                is_structured[idx] = 1 if np.random.rand() < 0.1 else 0
+                
+        df = pd.DataFrame({
+            'amount': np.round(amounts, 2),
+            'rail': rails,
+            'dwell_time_seconds': dwell_times.astype(int),
+            'is_structured': is_structured
+        })
+        return df
 
 # =====================================================================
 # 2. DYNAMIC ATTACK CATALOG (Core Red Team Engine)

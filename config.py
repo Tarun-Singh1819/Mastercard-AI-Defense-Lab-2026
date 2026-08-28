@@ -15,7 +15,7 @@ METRICS_SAVE_PATH: str = "adversarial_loop_metrics.json"
 # =====================================================================
 # ADVERSARIAL LOOP SETTINGS
 # =====================================================================
-NUM_EPOCHS: int = 8
+NUM_EPOCHS: int = 12
 N_LEGIT_PER_EPOCH: int = 3000
 USE_HGT: bool = True  # Toggle for Heterogeneous Graph Transformer
 

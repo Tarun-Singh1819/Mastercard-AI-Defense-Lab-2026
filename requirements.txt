@@ -3,6 +3,7 @@ torch-geometric
 pandas
 numpy
 networkx
-scikit-learn
+scikit-learn==1.6.1
 faker
 google-generativeai
+ctgan
