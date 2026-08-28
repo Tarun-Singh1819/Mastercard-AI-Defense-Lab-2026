@@ -30,12 +30,18 @@ def run_inference_demo():
     demo_params = catalog.generate_epoch_params(epoch=99)
     demo_params['topology'] = ['cross_rail', 'star_burst']
     
+    # Enable Gemini LLM for the Red Team to show it in action during the demo
+    from src.red_team.strategist import LLMRedTeamController
+    llm_controller = LLMRedTeamController(use_mock=False)
+    
+    # We pass empty blind_spots for the first inference step
     epoch_df, params, epoch_accounts = generate_epoch_data(
         catalog=catalog,
         ctgan_path=config.CTGAN_MODEL_PATH,
         epoch=99,
-        n_legit=2000, # Smaller batch for fast demo
-        llm_controller=None # Disable LLM for faster inference demo
+        blind_spots={}, # No previous blind spots yet
+        n_legit=2000, 
+        llm_controller=llm_controller 
     )
     
     logger.info(f"Generated {len(epoch_df)} transactions and {len(epoch_accounts)} accounts.")
