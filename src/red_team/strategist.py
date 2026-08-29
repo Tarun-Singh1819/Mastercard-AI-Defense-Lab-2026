@@ -138,6 +138,19 @@ class LLMRedTeamController:
                     overrides['dwell_range'] = (15, 60) # Fast
                     strategy_points.append("→ Action: Decrease dwell time for rapid money movement before detection.")
 
+        if 'is_structured' in blind_spots:
+            info = blind_spots['is_structured']
+            if isinstance(info, dict) and 'direction' in info:
+                if info['direction'] == 'decrease':
+                    overrides['amount_mean'] = random.choice([
+                        random.uniform(3000, 7000),
+                        random.uniform(12000, 25000)
+                    ])
+                    strategy_points.append("→ Action: Avoid structuring range (₹8.5K-10K) — Blue Team flags structured transactions.")
+                else:
+                    overrides['amount_mean'] = random.uniform(8500, 10000)
+                    strategy_points.append("→ Action: Deliberately use structuring range to blend with legitimate structured payments.")
+
         if not strategy_points:
             strategy_points.append("General evasion mode: randomizing all parameters.")
             overrides['amount_mean'] = random.uniform(15000, 30000)
