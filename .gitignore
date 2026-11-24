@@ -11,3 +11,6 @@ train_ctgan.py
 visualize_results.py
 *.md
 !README.md
+Mastercard_notebook.ipynb
+*.ipynb
+
